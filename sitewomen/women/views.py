@@ -33,7 +33,7 @@ def index(request):
 
 
 def about(request):
-    return render(request, 'women/about.html', {'title': 'О нас'})
+    return render(request, 'women/about.html', {'title': 'О нас', 'menu':menu})
 
 
 def page_not_found(request, exception):
