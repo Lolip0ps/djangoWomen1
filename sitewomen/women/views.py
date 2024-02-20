@@ -22,18 +22,19 @@ data_db = [
      "is_published": True},
 ]
 
+cats_db = [
+    {'id': 1, 'name': 'Актрисы'},
+    {'id': 2, 'name': 'Певицы'},
+    {'id': 3, 'name': 'Спортсменки'},
+]
+
 
 def index(request):
-    # t = render_to_string('women/index.html')
-    # return HttpResponse(t)
-
     data = {
         'posts': data_db,
         'title': 'Главная страница',
         'menu': menu,
-        'float': 12.765,
-        'str': 'sdfsd',
-
+        'cat_selected': 0,
     }
     return render(request, 'women/index.html', context=data)
 
@@ -60,3 +61,13 @@ def contact(request):
 
 def login(request):
     return HttpResponse('Авторизация')
+
+
+def show_category(request, cat_id):
+    data = {
+        'posts': data_db,
+        'title': 'Отображение по рубрикам',
+        'menu': menu,
+        'cat_selected': cat_id,
+    }
+    return render(request, 'women/index.html', context=data)
