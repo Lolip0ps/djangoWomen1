@@ -1,26 +1,73 @@
 from django.http import HttpResponse, HttpResponseNotFound, Http404, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from django.template.loader import render_to_string
+
+menu = [
+    {'title': 'О сайте', 'url_name': 'about'},
+    {'title': 'Добавить статью', 'url_name': 'addpage'},
+    {'title': 'Обратная связь', 'url_name': 'contact'},
+    {'title': 'Войти', 'url_name': 'login'},
+]
+
+data_db = [
+    {'id': 1, 'title': 'Боба',
+     'content': 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. ',
+     "is_published": True},
+    {'id': 2, 'title': 'Биба',
+     'content': 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. ',
+     "is_published": False},
+    {'id': 3, 'title': 'Пупа',
+     'content': 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. ',
+     "is_published": True},
+]
+
+cats_db = [
+    {'id': 1, 'name': 'Актрисы'},
+    {'id': 2, 'name': 'Певицы'},
+    {'id': 3, 'name': 'Спортсменки'},
+]
 
 
 def index(request):
-    return HttpResponse("Hello, world. You're at the")
+    data = {
+        'posts': data_db,
+        'title': 'Главная страница',
+        'menu': menu,
+        'cat_selected': 0,
+    }
+    return render(request, 'women/index.html', context=data)
 
 
-def category(request, cat_id):
-    return HttpResponse(f'<h1>Category</h1><p>id: {cat_id}</p>')
-
-
-def category_by_slug(request, cat_slug):
-    return HttpResponse(f'<h1>Category by slug</h1><p>slug: {cat_slug}</p>')
-
-
-def archive(request, year):
-    if year > 2024:
-        uri = reverse('cats', args=('music',))
-        return HttpResponseRedirect(uri)
-    return HttpResponse(f"<h1>Архив по годам</h1><p>{year}</p>")
+def about(request):
+    return render(request, 'women/about.html', {'title': 'О нас', 'menu': menu})
 
 
 def page_not_found(request, exception):
     return HttpResponseNotFound("<h1>Страница не найдена</h1>")
+
+
+def show_post(request, post_id):
+    return HttpResponse(f'Отображение статьи с id = {post_id}')
+
+
+def addpage(request):
+    return HttpResponse('Добавление статьи')
+
+
+def contact(request):
+    return HttpResponse('Обратная связь')
+
+
+def login(request):
+    return HttpResponse('Авторизация')
+
+
+def show_category(request, cat_id):
+    data = {
+        'posts': data_db,
+        'title': 'Отображение по рубрикам',
+        'menu': menu,
+        'cat_selected': cat_id,
+    }
+    return render(request, 'women/index.html', context=data)
