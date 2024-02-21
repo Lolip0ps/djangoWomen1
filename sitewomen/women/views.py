@@ -1,5 +1,7 @@
 from django.http import HttpResponse, HttpResponseNotFound
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
+
+from women.models import Women
 
 menu = [
     {'title': 'О сайте', 'url_name': 'about'},
@@ -28,8 +30,9 @@ cats_db = [
 
 
 def index(request):
+    posts = Women.objects.filter(is_published=1)
     data = {
-        'posts': data_db,
+        'post': posts,
         'title': 'Главная страница',
         'menu': menu,
         'cat_selected': 0,
@@ -45,8 +48,15 @@ def page_not_found(request, exception):
     return HttpResponseNotFound("<h1>Страница не найдена</h1>")
 
 
-def show_post(request, post_id):
-    return HttpResponse(f'Отображение статьи с id = {post_id}')
+def show_post(request, post_slug):
+    post = get_object_or_404(Women, slug=post_slug)
+    data = {
+        'title': post.title,
+        'menu': menu,
+        'post': post,
+        'cat_selected': 1,
+    }
+    return render(request, 'women/post.html', data)
 
 
 def addpage(request):
@@ -63,7 +73,7 @@ def login(request):
 
 def show_category(request, cat_id):
     data = {
-        'posts': data_db,
+        'post': data_db,
         'title': 'Отображение по рубрикам',
         'menu': menu,
         'cat_selected': cat_id,
