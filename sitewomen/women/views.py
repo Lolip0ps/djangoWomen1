@@ -59,8 +59,9 @@ def login(request):
 
 
 def show_category(request, cat_id):
+    posts = Women.objects.all()
     data = {
-        'post': data_db,
+        'post': posts,
         'title': 'Отображение по рубрикам',
         'menu': menu,
         'cat_selected': cat_id,
