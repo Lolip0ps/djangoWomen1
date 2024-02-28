@@ -1,6 +1,6 @@
 from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import render, get_object_or_404
-from women.models import Women
+from women.models import Women, Category
 
 menu = [
     {'title': 'О сайте', 'url_name': 'about'},
@@ -58,12 +58,13 @@ def login(request):
     return HttpResponse('Авторизация')
 
 
-def show_category(request, cat_id):
-    posts = Women.objects.all()
+def show_category(request, cat_slug):
+    category = get_object_or_404(Category, slug=cat_slug)
+    posts = Women.published.filter(cat_id=category.pk)
     data = {
         'post': posts,
-        'title': 'Отображение по рубрикам',
+        'title': f'РУбрика {category.name}',
         'menu': menu,
-        'cat_selected': cat_id,
+        'cat_selected': category,
     }
     return render(request, 'women/index.html', context=data)
